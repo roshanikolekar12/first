@@ -1,3 +1,24 @@
+git log
+  444  git reset --soft HEAD~1
+  445  git log
+  446  git reset --soft HEAD~1
+  447  git revert afab
+  448  git log
+  449  git reset --soft HEAD
+  450  git log
+
+491  git init
+485  cd ~/my-project
+  486  cp ~/secret-key ~/r_docker ~/r_docker1 ~/practice ~/r_docker2 ~/r_jenkins ~/r_k>
+
+  492  git remote add origin https://github.com
+  493  git add .
+  494  git commit -m "Assignment files upload"
+  495  git push -u origin main --force
+  496  git branch -M main
+  502  git remote set-url origin https://github.com/roshanikolekar12/first.git
+  503  git push -u origin main --force
+
 A))) Deploy a MySQL container)
 1) docker run -d \
   --name mysql_database \
