@@ -1,0 +1,73 @@
+sudo apt update
+sudo apt install ca-certificates curl gnupg
+
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo docker run hello-world
+
+sudo usermod -aG docker ${USER} # Log out and log back in
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+
+sudo systemctl start docker
+sudo systemctl enable docker
+
+
+
+
+
+Pull and Run Image
+1) Pull the Nginx image:                docker pull nginx
+2) Run a container from the image:     docker run --name my-web-server -d -p 8080:80 nginx
+3) checking the running containers:    docker ps
+4)stop the container
+5)Remove the container 
+
+
+1)Pull the Alpine image:                docker pull alpine
+2)List local images:                    docker images
+3)Inspect the image:                    docker inspect alpine
+4)Remove the image:                     docker rmi alpine
+5)Removing a running container’s imageIf you try to remove an image (docker rmi) while a container (running or stopped) is still using it, Docker will block the request and throw an error.The Error: You’ll see a message like: Error response from daemon: conflict: unable to delete <ID> (must be forced) - image is being used by stopped container <ID>.The Reason: Docker maintains a dependency tree. To ensure system integrity, it prevents you from deleting the underlying "blueprint" (the image) if an instance of it (the container) still exists.The Solution: You must first remove the container (docker rm) before you can remove the image (docker rmi). Alternatively, you can use the -f (force) flag, but this is generally discouraged as it can leave "dangling" layers.
+
+1) Run Ubuntu in interactive mode:       docker run -it ubuntu
+2) List all containers(stopped):         docker ps -a
+3) Restart the stopped container:        docker restart <container_id>
+
+1)Run an nginx container with name web_server:          docker run --name web_server -d nginx
+2)Stop the container
+3) Rename container:                                    docker rename web-server my-server
+4)remove container:                                     docker rm <id>  
+
+1)Tag nginx it as mynginx:v1:                           docker tag nginx mynginx:v1
+2)Tag it again as mynginx:latest:                       docker tag nginx mynginx:latest
+3)List images and verify:                               docker images
+4)Remove one tag and observe:                           docker rmi mynginx:v1
+5)Observation:When you run this, Docker does not delete the image data (layers). Instead, it performs an "Untagged" operation. Because other tags (mynginx:latest and nginx:latest) still point to that Image ID, the image remains on your system. Docker only truly deletes the image layers when the last remaining tag is removed.
+
+Push Image to Docker Hub
+1) login to docker:     docker login
+2) Tag your image:      docker tag nginx <your_username>/mynginx:v1
+3) Push the image:      docker push <your_username>/mynginx:v1
+4) logout from docker:  docker logout
+5) verify on docker hub
+
+Find and kill the process on 8080:80
+1)sudo lsof -i :8080
+2)sudo kill -9 <PID>
+
+Port mapping:
+1) Run Nginx with Port Mapping:       docker run --name web-port-test -d -p 8080:80 nginx
+2) Access in Browser:                 http://localhost:8080
+3) List docker networks:              docker network ls
+4)Inspect Default Bridge Network:     docker inspect network bridge
+5) What Port Mapping DoesBy default, Docker containers are isolated and have their own private IP addresses that are not accessible from outside the host machine.Port mapping (-p host_port:container_port) acts as a "tunnel" or a bridge:The Request: When you visit localhost:8080, your computer sends a request to your Ubuntu OS on port 8080.The Translation: The Docker engine intercepts that traffic and forwards it to the container's internal port (port 80).The Response: The web server inside the container processes the request and sends the data back through the same tunnel to your browser.Without port mapping, your web application would be running "silently" inside the container, unreachable by any external users or browsers.

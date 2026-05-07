@@ -1,0 +1,131 @@
+Docker Volume Persistence
+1)Create the Docker Volume:                    docker volume create data_vol
+  to check volumes:                              docker volume ls
+2)Run a container and mount the volume:        docker run --name container1 -v data_vol:/data -it alpine
+3)Create a file inside the volume and exit:    echo "Hello from the volume!" > /data/testfile.txt
+4)Remove the first Container:                  docker rm container1
+5)Start a new container using the same volume: docker run --name container2 -v data_vol:/data -it alpine
+6)Verify the file still exists:                cat /data/testfile.txt
+
+
+Dockerfile – Python Application
+1)Create the Python Script:  app.py
+2)Create the Dockerfile:   
+# Use the official lightweight Python image
+FROM python:3.9-slim
+# Set the working directory inside the container
+WORKDIR /app
+# Copy the local script into the container
+COPY app.py .
+# Command to run the script
+CMD ["python", "app.py"]
+                  
+3)Build the Image:                             docker build -t my-python-app .
+4)Run the Container:                           docker run my-python-app
+
+
+
+Dockerfile -java
+1)java file: main.java
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello! Java is running inside Docker.");
+    }
+}
+
+2)Create Dockerfile: 
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
+# Set the working directory inside the container
+WORKDIR /app
+# Copy the Java source file into the container
+COPY Main.java .
+# Compile the Java program
+RUN javac Main.java
+# Run the compiled class
+CMD ["java", "Main"]
+
+3)docker build -t my-java-app .
+4)docker run my-java-app
+
+
+Docker volume with MYSQL
+1)Run the MySQL Container with a Volume:  docker run --name my-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -v mysql_data:/var/lib/mysql -d mysql:latest
+2)Access MySQL and Insert Data:           docker exec -it my-mysql mysql -u root -p 
+SQL:
+CREATE DATABASE testdb;
+USE testdb;
+CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50));
+INSERT INTO users (name) VALUES ('Alice'), ('Bob');
+SELECT * FROM users;
+EXIT;
+3)Stop and Remove the Container:                   docker stop my-mysql
+                                                   docker rm my-mysql
+4)Start a New Container Using the Same Volume:     docker run --name my-mysql-new -e MYSQL_ROOT_PASSWORD=my-secret-pw -v mysql_data:/var/lib/mysql -d mysql:latest
+5)Verify Data Persistence:
+use testdb;
+select * from users;
+
+
+Dockerfile: nginx web server
+1) Create your HTML file: index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Docker Web Server</title>
+</head>
+<body>
+    <h1>Hello from Nginx!</h1>
+    <p>This page is being served from inside a Docker container.</p>
+</body>
+</html>
+2) Create Dockerfile:     
+# Use the official Nginx image
+FROM nginx:latest
+# Copy your custom HTML file to the Nginx default directory
+COPY index.html /usr/share/nginx/html/index.html
+# Expose port 80
+EXPOSE 80
+3)Build the Image :       docker build -t my-custom-nginx .
+4)Run the Container:      docker run --name web-server1 -d -p 8082:80 my-custom-nginx
+5) verify:
+In your browser: http://localhost:8082.
+In the terminal: curl localhost:8082
+
+
+Bind Mount vs Volume
+1)Create a Host Directory and File: 
+mkdir ~/practice
+echo "<h1>This is a Bind Mount!</h1>" > ~/practice/index.html
+2)Run a Container with a Bind Mount:
+docker run --name bind-mount -d -p 8085:80 -v ~/practice:/usr/share/nginx/html nginx
+3)On Browser:   http://localhost:8085
+
+
+Dockerfile – Shell Script Execution
+1)create the shell script:
+#!/bin/bash
+echo "The current system date and time is: $(date)"
+2) Create the Dockerfile:
+# Use a lightweight Linux base
+FROM alpine:latest
+# Install bash (Alpine uses 'sh' by default)
+RUN apk add --no-cache bash
+# Set the working directory
+WORKDIR /app
+# Copy the script into the container
+COPY script.sh .
+# Make the script executable
+RUN chmod +x script.sh
+# Run the script when the container starts
+CMD ["./script.sh"]
+3)Build the image:     docker build -t my-shell-app .
+4) Run the container:  docker run my-shell-app
+
+
+Shared Volume Between Containers
+1)Create the Shared Volume:     docker volume create shared_data
+2)Start the First Container:    docker run --name con1 -v shared_data:/common alpine sh -c "echo 'Shared data from Container A' > /common/hello.txt"
+3)Start the Second Container:   docker run --name reader-container -v shared_data:/common alpine cat /common/hello.txt
+

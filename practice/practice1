@@ -1,0 +1,111 @@
+A))) Deploy a MySQL container)
+1) docker run -d \
+  --name mysql_database \
+  -p 14316:3308 \
+  -e MYSQL_USER=natasha \
+  -e MYSQL_PASSWORD='user@123@123?' \
+  -e MYSQL_DATABASE=my_db \
+  -e MYSQL_ROOT_PASSWORD='server@123?' \
+  mysql:latest
+2) docker exec -it mysql_database mysql -unatasha -p
+
+
+B)))Deploy Apache with Static Content:
+1)Create a local directory for your content
+mkdir ~/my_site
+echo "<h1>Welcome to my Apache Server</h1>" > ~/my_site/index.html
+2) Run the container with a Bind Mount
+docker run -d \
+  --name apache_server \
+  -p 9001:80 \
+  -v ~/my_apache_site:/var/www/html \
+  ubuntu/apache2
+3) on browser: http://localhost:9001
+
+
+C))) Create a "busybox" Docker container:
+1)docker run --name my-hello-container busybox echo 'hello world'
+
+D)))Kubernetes Deployment Configuration:
+1) Create a file named :     php-apache-dep.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache-deployment
+spec:
+  replicas: 5  # Requirement 2: Launch 5 pods
+  selector:
+    matchLabels:
+      app: php-apache
+  template:
+    metadata:
+      labels:
+        app: php-apache
+    spec:
+      containers:
+      - name: php-apache-container # Requirement 3: Container name
+        image: php:apache            # Requirement 1: Pull PHP with Apache
+        ports:
+        - containerPort: 80         # Requirement 4: Container port 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache-service
+spec:
+  type: NodePort
+  selector:
+    app: php-apache
+  ports:
+    - protocol: TCP
+      port: 8080      # Requirement 4: Port 8080 on localhost (mapping)
+      targetPort: 80
+
+2). minikube delete --all --purge
+3)  minikube start --driver=docker
+4)  minikube status
+5) Create the Deployment :  kubectl apply -f php-apache-dep.yaml
+6)  Verification:           kubectl get pods
+
+E)))
+1) Create the Pod:                    kubectl run nginx --image=nginx --port=80
+2) Expose the Traffic on Port 8000:   kubectl expose pod nginx --port=8000 --target-port=80 --name=nginx-service
+3)kubectl get pod nginx
+kubectl get svc nginx-service
+
+
+
+f)))EC2 & Git
+1)a. Create a Linux EC2 InstanceLog into the AWS Management Console.Navigate to EC2 > Launch Instance.Name: Give it a name (e.g., Linux-Git-Demo).AMI: Select Amazon Linux 2023 or Ubuntu.Instance Type: Choose t2.micro (Free Tier eligible).Key Pair: Create a new key pair (.pem), download it, and keep it safe.Security Group: Ensure SSH (Port 22) is allowed from your IP.Click Launch Instance
+2)b. Connect to the EC2 InstanceOpen your terminal (or Git Bash on Windows).Set permissions for your key: chmod 400 your-key.pem :   SSH: ssh -i "your-key.pem" ec2-user@your-instance-public-ip
+3)Clone a Git Repository
+git clone https://github.com
+cd your-repo
+4)d. Edit and Push ChangesEdit a file using nano: nano file1.txt.Add some text, then press Ctrl+O, Enter, and Ctrl+X to save and exit.Configure Git (if first time): git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+5)git add file1.txt
+git commit -m "Updated file1.txt"
+git push origin main
+ 
+G)))
+1)Authenticate with DockerHub:            docker login
+2)Pull the official "alpine:3" image:     docker pull alpine:3
+3) Tag the image as "ditiss-alpine:3":    docker tag alpine:3 <your_username>/ditiss-alpine:3
+4)Push to your DockerHub repository:      docker push <your_username>/ditiss-alpine:3
+5)List stored images:                     docker images
+
+H)))
+1)Create the Directory:                sudo mkdir -p /root/clickcounter
+                                       cd /root/clickcounter
+2)Create the docker-compose.yml File:  
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+3)Run Docker Compose:
+sudo docker-compose up -d
+4) Verify the Installation:
+sudo docker-compose ps
+
