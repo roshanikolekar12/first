@@ -54,7 +54,11 @@ git add info.txt
 git commit -m "Updated info.txt in feature branch"
 git checkout main
 git merge feature
+git branch -d feature
 git push origin main
+
+git push origin --delete feature
+git branch -a
 
 491  git init
 485  cd ~/my-project
