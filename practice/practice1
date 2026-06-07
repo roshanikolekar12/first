@@ -9,6 +9,19 @@ git config --global --list
 git config --global --unset user.name
 git config --global --unset user.email
 
+mkdir git_lab
+cd git_lab
+git init
+echo "Roshani" > info.txt
+date >> info.txt
+git status
+git config --global user.name "roshanikolekar12"
+git config --global user.email "roshanikolekar111@gmail.com"
+git add info.txt
+git status
+git commit -m "Initial commit"
+git log --oneline
+
 491  git init
 485  cd ~/my-project
   486  cp ~/secret-key ~/r_docker ~/r_docker1 ~/practice ~/r_docker2 ~/r_jenkins ~/r_k>
