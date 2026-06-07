@@ -22,12 +22,13 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 
-
+docker --version
+docker login
 
 
 Pull and Run Image
 1) Pull the Nginx image:                docker pull nginx
-2) Run a container from the image:     docker run --name my-web-server -d -p 8080:80 nginx
+2) Run a container from the image:     docker run -d --name my-web-server -p 8080:80 nginx
 3) checking the running containers:    docker ps
 4)stop the container
 5)Remove the container 
@@ -39,13 +40,13 @@ Pull and Run Image
 4)Remove the image:                     docker rmi alpine
 5)Removing a running container’s imageIf you try to remove an image (docker rmi) while a container (running or stopped) is still using it, Docker will block the request and throw an error.The Error: You’ll see a message like: Error response from daemon: conflict: unable to delete <ID> (must be forced) - image is being used by stopped container <ID>.The Reason: Docker maintains a dependency tree. To ensure system integrity, it prevents you from deleting the underlying "blueprint" (the image) if an instance of it (the container) still exists.The Solution: You must first remove the container (docker rm) before you can remove the image (docker rmi). Alternatively, you can use the -f (force) flag, but this is generally discouraged as it can leave "dangling" layers.
 
-1) Run Ubuntu in interactive mode:       docker run -it ubuntu
+1) Run Ubuntu in interactive mode:      docker pull ubuntu | docker run -it ubuntu
 2) List all containers(stopped):         docker ps -a
 3) Restart the stopped container:        docker restart <container_id>
 
-1)Run an nginx container with name web_server:          docker run --name web_server -d nginx
-2)Stop the container
-3) Rename container:                                    docker rename web-server my-server
+1)Run an nginx container with name web_server:          docker run -d --name web_server nginx
+2)Stop the container                                    docker stop web_server | docker ps -a
+3) Rename container:                                    docker rename web-server my-server | docker ps -a
 4)remove container:                                     docker rm <id>  
 
 1)Tag nginx it as mynginx:v1:                           docker tag nginx mynginx:v1
