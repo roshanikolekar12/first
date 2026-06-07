@@ -1,0 +1,56 @@
+1) docker swarm init
+  docker node ls
+  docker service create --name nginx-service --replicas 2 -p 8080:80 nginx
+  docker service ls
+  docker service ps nginx-service
+  docker ps
+  Then open:  http://localhost:8080
+
+docker service inspect nginx-service
+docker service rm nginx-service
+  
+2)   mkdir python-swarm
+     cd python-swarm
+nano app.py 
+  import time
+while True:
+    print("Running in Swarm...")
+    time.sleep(5)
+  
+nano Dockerfile
+  FROM python:3.11-slim
+WORKDIR /app
+COPY app.py .
+CMD ["python", "app.py"]
+  
+docker build -t python-worker:v1 .
+docker swarm init
+docker service create --name python-service --replicas 3 python-worker:v1
+docker service ls
+docker service ps python-service
+docker service logs python-service
+
+3) docker swarm init
+docker service create --name nginx-service --replicas 2 -p 8080:80 nginx
+docker service ls
+docker service ps nginx-service
+docker service scale nginx-service=5
+docker service ls
+docker service ps nginx-service
+docker service scale nginx-service=1
+docker service ls
+docker service ps nginx-service
+
+4)docker swarm init
+docker service create --name nginx-service --replicas 2 -p 8080:80 nginx:1.25
+docker service ls
+docker service ps nginx-service
+docker service update --image nginx:latest --update-parallelism 1 --update-delay 10s nginx-service
+docker service ls
+docker service ps nginx-service
+docker service inspect nginx-service --pretty
+docker service rollback nginx-service
+
+5)
+docker swarm leave --force
+docker info
