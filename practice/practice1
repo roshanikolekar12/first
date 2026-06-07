@@ -1,11 +1,13 @@
 git log
-  444  git reset --soft HEAD~1
-  445  git log
   446  git reset --soft HEAD~1
   447  git revert afab
   448  git log
   449  git reset --soft HEAD
   450  git log
+
+git config --global --list
+git config --global --unset user.name
+git config --global --unset user.email
 
 491  git init
 485  cd ~/my-project
