@@ -9,6 +9,12 @@ git config --global --list
 git config --global --unset user.name
 git config --global --unset user.email
 
+git remote remove origin    OR
+git remote set-url origin https://github.com/roshanikolekar12/first.git
+git push -u origin main --force
+
+
+
 mkdir git_lab
 cd git_lab
 git init
@@ -22,17 +28,40 @@ git status
 git commit -m "Initial commit"
 git log --oneline
 
+cd ~/git_lab
+git remote add origin https://github.com/YOUR_USERNAME/git_lab_remote.git
+git remote -v
+git add info.txt
+git status
+git commit -m "Initial com
+git branch -M main
+git push -u origin main
+
+cd ..
+git clone https://github.com/roshanikolekar12/first.git
+cd first
+echo "This is sample content for Git assignment" > data.txt
+git status
+git add data.txt
+git commit -m "Added data file"
+git push origin main
+
+git branch feature
+git checkout/switch feature
+git branch
+echo "Feature branch update" >> info.txt
+git add info.txt
+git commit -m "Updated info.txt in feature branch"
+git checkout main
+git merge feature
+git push origin main
+
 491  git init
 485  cd ~/my-project
   486  cp ~/secret-key ~/r_docker ~/r_docker1 ~/practice ~/r_docker2 ~/r_jenkins ~/r_k>
 
-  492  git remote add origin https://github.com
-  493  git add .
-  494  git commit -m "Assignment files upload"
-  495  git push -u origin main --force
-  496  git branch -M main
-  502  git remote set-url origin https://github.com/roshanikolekar12/first.git
-  503  git push -u origin main --force
+
+ 
 
 A))) Deploy a MySQL container)
 1) docker run -d \
